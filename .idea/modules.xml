@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://E:\Live\AndroidDonate\AndroidDonate.iml" filepath="E:\Live\AndroidDonate\AndroidDonate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/sample.iml" filepath="$PROJECT_DIR$/app/sample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pay/donate.iml" filepath="$PROJECT_DIR$/pay/donate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/payment.iml" filepath="$PROJECT_DIR$/payment.iml" />
+    </modules>
+  </component>
+</project>
