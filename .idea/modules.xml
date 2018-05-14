@@ -3,9 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://E:\Live\AndroidDonate\AndroidDonate.iml" filepath="E:\Live\AndroidDonate\AndroidDonate.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/sample.iml" filepath="$PROJECT_DIR$/app/sample.iml" />
-      <module fileurl="file://$PROJECT_DIR$/pay/donate.iml" filepath="$PROJECT_DIR$/pay/donate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://E:\Live\payment\pay\donate.iml" filepath="E:\Live\payment\pay\donate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pay/pay.iml" filepath="$PROJECT_DIR$/pay/pay.iml" />
       <module fileurl="file://$PROJECT_DIR$/payment.iml" filepath="$PROJECT_DIR$/payment.iml" />
+      <module fileurl="file://E:\Live\payment\app\sample.iml" filepath="E:\Live\payment\app\sample.iml" />
     </modules>
   </component>
 </project>
