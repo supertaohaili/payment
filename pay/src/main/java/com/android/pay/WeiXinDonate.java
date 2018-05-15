@@ -1,4 +1,4 @@
-package com.thl.pay;
+package com.android.pay;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;

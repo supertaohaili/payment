@@ -1,116 +1,51 @@
-package com.thl.sample;
+package com.android.pay;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-
-import com.thl.pay.AlipayDonate;
-import com.thl.pay.Codec;
-import com.thl.pay.WeiXinDonate;
-
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.InputStream;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+public class PayActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final int REQUEST_CODE = 2233;
-
     public static final String Donate_USER_INPUT = "FKX00495YH3QUBGBLRZZC9";
     public static final String Donate_1 = "FKX08561ATQDINCHBKKF77";
     public static final String Donate_5 = "FKX06128NYJCZA11N6WR4D";
     public static final String Donate_10 = "FKX03118OHY3IB8TQRTP77";
-//    public static final String Donate_Merchant = "stx00187oxldjvyo3ofaw60";//商家收款
-
-
-    private RadioGroup radioGroup;
-    private Button btAlipayCustom;
-    private Button btAlipayFree;
-    private Button btAlipayMerchant;
-
-    private int currentMoney = 0;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        findViewById(R.id.bt_weixin).setOnClickListener(this);
-
-        btAlipayCustom = ((Button) findViewById(R.id.bt_alipay));
-        btAlipayFree = ((Button) findViewById(R.id.bt_alipay_free));
-        btAlipayMerchant = ((Button) findViewById(R.id.bt_alipay_merchant));
-        radioGroup = ((RadioGroup) findViewById(R.id.radio_group));
-        radioGroup.setOnCheckedChangeListener(this);
-        radioGroup.getChildAt(0).performClick();
-
-        btAlipayCustom.setOnClickListener(this);
-        btAlipayFree.setOnClickListener(this);
-        btAlipayMerchant.setOnClickListener(this);
-
-        String string = Codec.BASE64.encodeToString("taohiali");
-        Log.e("taohaili",string);
-        String string1 = Codec.BASE64.decodeToString(string);
-        Log.e("taohaili",string1);
+        setFullScreen(this);
+        setContentView(R.layout.activity_pay);
+        findViewById(R.id.btn_weixin).setOnClickListener(this);
+        findViewById(R.id.btn_zhifubao).setOnClickListener(this);
     }
-
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-        doNormal(id);
-    }
-
-
-    private void doNormal(int id) {
-        switch (id) {
-            case R.id.bt_weixin:
-                //微信捐赠
-                checkPermissionAndDonateWeixin();
-                break;
-            case R.id.bt_alipay:
-                // 自定义价格
-                if (currentMoney == 1) {
-                    donateAlipay(Donate_1);
-                } else if (currentMoney == 5) {
-                    donateAlipay(Donate_5);
-                } else if (currentMoney == 10) {
-                    donateAlipay(Donate_10);
-                }
-                break;
-            case R.id.bt_alipay_free:
-                // 用户手动输入金额
-                donateAlipay(Donate_USER_INPUT);
-                break;
-            case R.id.bt_alipay_merchant:
-                // 商户收款
-//                donateAlipay(Donate_Merchant);
-                break;
+        int i = v.getId();
+        if (i == R.id.btn_weixin) {//微信捐赠
+            checkPermissionAndDonateWeixin();
+        } else if (i == R.id.btn_zhifubao) {
+            donateAlipay(Donate_USER_INPUT);
         }
-    }
-
-    @Override
-    public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-        RadioButton checkedRadioButton = (RadioButton) group.findViewById(checkedId);
-        String text = checkedRadioButton.getText().toString().trim();
-        currentMoney = Integer.valueOf(text.replace("元", "").trim());
-        btAlipayCustom.setText("支付宝捐赠(" + currentMoney + "元)");
     }
 
     /**
@@ -144,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void showDonateTipDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("微信捐赠操作步骤")
-                .setMessage("点击确定按钮后会跳转微信扫描二维码界面：\n\n" + "1. 点击右上角的菜单按钮\n\n" + "2. 点击'从相册选取二维码'\n\n" + "3. 选择第一张二维码图片即可\n\n")
+                .setMessage("点击'确定按钮'后会跳转微信扫描二维码界面：\n\n" + "1. 点击右上角的菜单按钮\n\n" + "2. 点击'从相册选取二维码'\n\n" + "3. 选择第一张二维码图片即可\n\n")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -159,14 +94,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 需要提前准备好 微信收款码 照片，可通过微信客户端生成
      */
     private void donateWeixin() {
-
         new Thread(new Runnable() {
             @Override
             public void run() {
                 InputStream weixinQrIs = getResources().openRawResource(R.raw.pay);
                 String qrPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "pay" + File.separator + "weixin_pay.png";
                 WeiXinDonate.saveDonateQrImage2SDCard(qrPath, BitmapFactory.decodeStream(weixinQrIs));
-                WeiXinDonate.donateViaWeiXin(MainActivity.this, qrPath);
+                WeiXinDonate.donateViaWeiXin(PayActivity.this, qrPath);
             }
         }).start();
     }
@@ -174,10 +108,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            donateWeixin();
+            showDonateTipDialog();
         } else {
             Toast.makeText(this, "权限被拒绝", Toast.LENGTH_LONG).show();
         }
     }
 
+    /**
+     * 设置全屏
+     *
+     * @param context
+     */
+    public void setFullScreen(Context context) {
+        if (context instanceof Activity) {
+            Activity activity = (Activity) context;
+            WindowManager.LayoutParams params = activity.getWindow().getAttributes();
+            params.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+            activity.getWindow().setAttributes(params);
+            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+
+    }
 }

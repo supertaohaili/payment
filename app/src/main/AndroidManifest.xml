@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.thl.sample"
+<manifest package="com.android.sample"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- 微信需要往sd卡写入二维码 -->
@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.thl.sample.MainActivity">
+        <activity android:name="com.android.sample.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
